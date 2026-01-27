@@ -30,28 +30,28 @@ void test_and_gate_basic() {
     std::cout << "\nTest 1: A=0, B=0\n";
     sim.schedule_event(Event(0, a->get_id(), 0));
     sim.schedule_event(Event(0, b->get_id(), 0));
-    sim.run_until(200);
+    sim.run_until(100);
     assert(y->get_value() == 0);
     std::cout << "✓ Output Y = 0 (correct)\n";
     
     // Test case 2: A=1, B=0 -> Y should be 0
     std::cout << "\nTest 2: A=1, B=0\n";
-    sim.schedule_event(Event(300, a->get_id(), 1));
-    sim.run_until(500);
+    sim.schedule_event(Event(100, a->get_id(), 1));
+    sim.run_until(200);
     assert(y->get_value() == 0);
     std::cout << "✓ Output Y = 0 (correct)\n";
     
     // Test case 3: A=1, B=1 -> Y should be 1
     std::cout << "\nTest 3: A=1, B=1\n";
-    sim.schedule_event(Event(600, b->get_id(), 1));
-    sim.run_until(800);
+    sim.schedule_event(Event(200, b->get_id(), 1));
+    sim.run_until(300);
     assert(y->get_value() == 1);
     std::cout << "✓ Output Y = 1 (correct)\n";
     
     // Test case 4: A=0, B=1 -> Y should be 0
     std::cout << "\nTest 4: A=0, B=1\n";
-    sim.schedule_event(Event(900, a->get_id(), 0));
-    sim.run_until(1100);
+    sim.schedule_event(Event(300, a->get_id(), 0));
+    sim.run_until(400);
     assert(y->get_value() == 0);
     std::cout << "✓ Output Y = 0 (correct)\n";
     

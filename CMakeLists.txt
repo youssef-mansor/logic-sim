@@ -23,3 +23,25 @@ add_executable(test_integration
 )
 
 target_include_directories(test_integration PRIVATE include)
+
+add_executable(test_trace_waveform
+    tests/test_trace_waveform.cpp
+    src/event.cpp
+    src/event_queue.cpp
+    src/signal.cpp
+    src/gate.cpp
+    src/simulator.cpp
+)
+
+target_include_directories(test_trace_waveform PRIVATE include)
+
+add_executable(test_comb
+    tests/test_comb.cpp
+    src/event.cpp
+    src/event_queue.cpp
+    src/signal.cpp
+    src/gate.cpp
+    src/simulator.cpp
+)
+
+target_include_directories(test_comb PRIVATE include)

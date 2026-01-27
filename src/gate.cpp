@@ -21,6 +21,8 @@ ANDGate::ANDGate(uint64_t delay) {
 }
 
 void ANDGate::evaluate(Simulator* sim, uint64_t current_time) {
+    if (inputs.size() < 2) return;
+    
     uint8_t result = 1; // Start with true
     for (const auto& input : inputs) {
         if (input->get_value() == 0) {
@@ -35,6 +37,8 @@ void ANDGate::evaluate(Simulator* sim, uint64_t current_time) {
         // Schedule event in simulator
         sim->schedule_event(Event(current_time + propagation_delay, output->get_id(), result));
     }
+
+    
 }
 
 ORGate::ORGate(uint64_t delay) {
@@ -42,6 +46,8 @@ ORGate::ORGate(uint64_t delay) {
 }
 
 void ORGate::evaluate(Simulator* sim, uint64_t current_time) {
+    if (inputs.size() < 2) return;
+
     uint8_t result = 0; // Start with false
     for (const auto& input : inputs) {
         if (input->get_value() == 1) {
@@ -74,3 +80,34 @@ void NOTGate::evaluate(Simulator* sim, uint64_t current_time) {
     }
 }
 
+// TODO: verify by AI
+XORGate::XORGate(uint64_t delay){
+    propagation_delay = delay;
+}
+
+void XORGate::evaluate(Simulator* sim, uint64_t current_time){
+   if (inputs.size() < 2) return;
+
+    // Check for uknkown values first
+    for (const auto& input: inputs){
+        if(input->get_value() == 2){
+            if(output->get_value() != 2){
+                sim->schedule_event(Event(
+                    current_time + propagation_delay,
+                    output->get_id(),
+                    2
+                ));
+            }
+        }
+    }
+
+    uint8_t result = 0;
+    for(const auto& input: inputs){
+        result ^= input->get_value();
+    }
+
+    if (result != output->get_value()) {
+        // Schedule event in simulator
+        sim->schedule_event(Event(current_time + propagation_delay, output->get_id(), result));
+    }
+}

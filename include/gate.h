@@ -43,4 +43,11 @@ public:
     void evaluate(Simulator* sim, uint64_t current_time) override;
 };
 
+// TODO: verify by AI. What should be the delay?
+class XORGate : public Gate {
+public:
+    XORGate(uint64_t delay = 50);
+    void evaluate(Simulator* sim, uint64_t current_time) override;
+};
+
 #endif // GATE_H
