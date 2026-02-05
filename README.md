@@ -11,64 +11,42 @@ make
 ./test_integration
 ```
 
-## Example: Half-Adder Circuit
+## Example: General Circuit Construction
+
+### Create Signals
 
 ```cpp
-#include "simulator.h"
-#include "signal.h"
-#include "gate.h"
-
-int main() {
-    Simulator sim;
-    sim.enable_trace();
-    
-    // Create signals
-    Signal* a = sim.create_signal("A", 0);
-    Signal* b = sim.create_signal("B", 0);
-    Signal* sum = sim.create_signal("Sum", 2);
-    Signal* carry = sim.create_signal("Carry", 2);
-    
-    // Build half adder: Sum = A XOR B, Carry = A AND B
-    XORGate* xor_gate = sim.create_gate<XORGate>(100);
-    xor_gate->connect_input(a);
-    xor_gate->connect_input(b);
-    xor_gate->connect_output(sum);
-    
-    ANDGate* and_gate = sim.create_gate<ANDGate>(100);
-    and_gate->connect_input(a);
-    and_gate->connect_input(b);
-    and_gate->connect_output(carry);
-    
-    // Test case 1: 0 + 0 = 00
-    std::cout << "\nTest 1: A=0, B=0 -> Sum=0, Carry=0\n";
-    sim.schedule_event(Event(0, a->get_id(), 0));
-    sim.schedule_event(Event(0, b->get_id(), 0));
-    sim.run_until(200);
-    assert(sum->get_value() == 0);
-    assert(carry->get_value() == 0);
-    std::cout << "✓ Passed\n";
-    
-    // Test case 2: 0 + 1 = 01
-    
-    // Test case 3: 1 + 0 = 01
-    
-    // Test case 4: 1 + 1 = 10
-    
-    // Output trace
-    std::cout << "\n";
-    sim.print_trace();
-    sim.dump_waveform("half_adder.vcd");
-    
-    return 0;
-}
+// Syntax: create_signal("Name", Initial_Value)
+Signal* in1 = sim.create_signal("Input1", 0);
+Signal* in2 = sim.create_signal("Input2", 0);
+Signal* out1 = sim.create_signal("Output1", 0);
 ```
+### Create Gates
+
+```cpp
+// Syntax: create_gate<GateType>(Propagation_Delay_in_ps)
+auto* myGate = sim.create_gate<ANDGate>(100); 
+```
+### Connect Components
+
+```cpp
+// Connect inputs
+myGate->connect_input(in1);
+myGate->connect_input(in2);
+
+// Connect output
+myGate->connect_output(out1);
+```
+
+## Example: Full-Adder Circuit
+
 Note: Full test found in tests/test_comp.cpp
 
 ### Waveform Output
 
-![Half-Adder Simulation](images/Half-adder-sim.png)
+![Half-Adder Simulation](images/Full-adder-sim.png)
 
-Note: Waveforms include propagation delay.
+Note: Propogation delay of all gates = 0.
 
 View VCD files with [GTKWave](http://gtkwave.sourceforge.net/) or any waveform viewer.
 

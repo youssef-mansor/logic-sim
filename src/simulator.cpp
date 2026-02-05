@@ -3,6 +3,7 @@
 #include <iostream>
 #include <fstream>
 #include <iomanip>
+#include <functional>
 
 // Helper: convert value to char
 static char value_to_char(uint8_t val) {
@@ -69,38 +70,54 @@ void Simulator::step() {
     if (event_queue.empty()) {
         return;
     }
-    
-    Event e = event_queue.pop_next();
-    current_time = e.time;
-    
-    Signal* sig = get_signal_by_id(e.signal_id);
-    if (!sig) {
-        throw std::runtime_error("Event references unknown signal ID: " + 
-                                 std::to_string(e.signal_id));
-    }
-    
-    uint8_t old_value = sig->get_value();
-    sig->set_value(e.new_value);
-    
-    // NEW: Log the change if tracing
-    if (trace_enabled && old_value != e.new_value) {
-        trace_log.push_back({current_time, sig->get_name(), old_value, e.new_value});
-    }
-    
-    // Console trace (if enabled)
-    if (trace_enabled) {
-        std::cout << "t=" << current_time << "ps: " << sig->get_name() 
-                  << " " << value_to_char(old_value) << " -> " 
-                  << value_to_char(e.new_value) << "\n";
-    }
-    
-    // If multiple signals change concurrently, evaluate the system on last change.
-    if (!event_queue.empty())
-        if (event_queue.next_time() == current_time) return;
 
+    std::vector<std::reference_wrapper<const std::vector<Gate *>>> observer_lists;
+    bool same_step = true;
+
+    while(same_step){
+        same_step = false;
+
+        Event e = event_queue.pop_next();
+        current_time = e.time;
+
+        // True if multiple signals change at the same time stamp
+        // Register these simultaneous changes in one step
+        if (!event_queue.empty())
+            same_step = event_queue.next_time() == current_time;
+        
+        Signal* sig = get_signal_by_id(e.signal_id);
+        if (!sig) {
+            throw std::runtime_error("Event references unknown signal ID: " + 
+                                    std::to_string(e.signal_id));
+        }
+        
+        uint8_t old_value = sig->get_value();
+        sig->set_value(e.new_value);
+        
+        observer_lists.push_back(std::cref(sig->get_observers()));
+
+        // NEW: Log the change if tracing
+        if (trace_enabled && old_value != e.new_value) {
+            trace_log.push_back({current_time, sig->get_name(), old_value, e.new_value});
+        }
+        
+        // Console trace (if enabled)
+        if (trace_enabled) {
+            std::cout << "t=" << current_time << "ps: " << sig->get_name() 
+                    << " " << value_to_char(old_value) << " -> " 
+                    << value_to_char(e.new_value) << "\n";
+        }
+        
+    }
+    
     // Notify observers
-    for (Gate* gate : sig->get_observers()) {
-        gate->evaluate(this, current_time);
+    for (const auto& list_wrapper : observer_lists) {
+        
+        const std::vector<Gate*>& observer_list = list_wrapper.get();
+        
+        for (Gate* gate : observer_list) {
+            gate->evaluate(this, current_time);
+        }
     }
 }
 

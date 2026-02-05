@@ -3,6 +3,14 @@
 #include "simulator.h"
 #include <stdexcept>
 
+uint32_t ANDGate::id_counter = 0;
+uint32_t ORGate::id_counter = 0;
+uint32_t NOTGate::id_counter = 0;
+uint32_t XORGate::id_counter = 0;
+
+Gate::Gate(std::string gate_id, uint64_t delay) : id(gate_id), propagation_delay(delay) {
+}
+
 void Gate::connect_input(Signal* sig) {
     inputs.push_back(sig);
      sig->attach_observer(this);
@@ -16,8 +24,12 @@ uint64_t Gate::get_delay() const {
     return propagation_delay;
 }
 
-ANDGate::ANDGate(uint64_t delay) {
-    propagation_delay = delay;
+std::string Gate::get_id() const {
+    return id;
+}
+
+ANDGate::ANDGate(uint64_t delay) 
+    : Gate("AND" + std::to_string(id_counter++), delay){
 }
 
 void ANDGate::evaluate(Simulator* sim, uint64_t current_time) {
@@ -41,8 +53,7 @@ void ANDGate::evaluate(Simulator* sim, uint64_t current_time) {
     
 }
 
-ORGate::ORGate(uint64_t delay) {
-    propagation_delay = delay;
+ORGate::ORGate(uint64_t delay) : Gate("OR" + std::to_string(id_counter++), delay) {
 }
 
 void ORGate::evaluate(Simulator* sim, uint64_t current_time) {
@@ -64,8 +75,7 @@ void ORGate::evaluate(Simulator* sim, uint64_t current_time) {
     }
 }
 
-NOTGate::NOTGate(uint64_t delay) {
-    propagation_delay = delay;
+NOTGate::NOTGate(uint64_t delay) : Gate("NOT" + std::to_string(id_counter++), delay) {
 }
 
 void NOTGate::evaluate(Simulator* sim, uint64_t current_time) {
@@ -80,15 +90,13 @@ void NOTGate::evaluate(Simulator* sim, uint64_t current_time) {
     }
 }
 
-// TODO: verify by AI
-XORGate::XORGate(uint64_t delay){
-    propagation_delay = delay;
+XORGate::XORGate(uint64_t delay): Gate("XOR" + std::to_string(id_counter++), delay) {
 }
 
 void XORGate::evaluate(Simulator* sim, uint64_t current_time){
    if (inputs.size() < 2) return;
 
-    // Check for uknkown values first
+    // Check for unknown values first
     for (const auto& input: inputs){
         if(input->get_value() == 2){
             if(output->get_value() != 2){

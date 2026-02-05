@@ -71,6 +71,9 @@ void test_half_adder() {
 }
 
 void test_full_adder() {
+
+    uint8_t delay = 0;
+
     std::cout << "\n=== Test: Full Adder (2 Half-Adders + OR) ===\n";
     
     Simulator sim;
@@ -91,29 +94,29 @@ void test_full_adder() {
     Signal* carry2 = sim.create_signal("carry2", 2); // Second half-adder carry
     
     // First half-adder: A + B
-    XORGate* xor1 = sim.create_gate<XORGate>(100);
+    XORGate* xor1 = sim.create_gate<XORGate>(delay);
     xor1->connect_input(a);
     xor1->connect_input(b);
     xor1->connect_output(sum1);
     
-    ANDGate* and1 = sim.create_gate<ANDGate>(100);
+    ANDGate* and1 = sim.create_gate<ANDGate>(delay);
     and1->connect_input(a);
     and1->connect_input(b);
     and1->connect_output(carry1);
     
     // Second half-adder: sum1 + Cin
-    XORGate* xor2 = sim.create_gate<XORGate>(100);
+    XORGate* xor2 = sim.create_gate<XORGate>(delay);
     xor2->connect_input(sum1);
     xor2->connect_input(cin);
     xor2->connect_output(sum);
     
-    ANDGate* and2 = sim.create_gate<ANDGate>(100);
+    ANDGate* and2 = sim.create_gate<ANDGate>(delay);
     and2->connect_input(sum1);
     and2->connect_input(cin);
     and2->connect_output(carry2);
     
     // Final OR for carry out
-    ORGate* or_gate = sim.create_gate<ORGate>(100);
+    ORGate* or_gate = sim.create_gate<ORGate>(delay);
     or_gate->connect_input(carry1);
     or_gate->connect_input(carry2);
     or_gate->connect_output(cout);
@@ -151,13 +154,16 @@ void test_full_adder() {
         sim.run_until(time + 400);
         
         // Verify outputs
-        assert(sum->get_value() == tc.expected_sum);
-        assert(cout->get_value() == tc.expected_cout);
         
         std::cout << "  A=" << (int)tc.a << " B=" << (int)tc.b 
                   << " Cin=" << (int)tc.cin
                   << " -> Sum=" << (int)sum->get_value() 
                   << " Cout=" << (int)cout->get_value() << " ✓\n";
+
+        assert(sum->get_value() == tc.expected_sum);
+        assert(cout->get_value() == tc.expected_cout);
+        
+
         
         time += 500; // Space out test cases
     }
