@@ -24,7 +24,7 @@ void test_and_gate_basic() {
     and_gate->connect_input(a);
     and_gate->connect_input(b);
     and_gate->connect_output(y);
-    sim.add_gate(and_gate);
+    sim.add_component(and_gate);
     
     // Test case 1: A=0, B=0 -> Y should be 0
     std::cout << "\nTest 1: A=0, B=0\n";
@@ -81,7 +81,7 @@ void test_or_gate_basic() {
     or_gate->connect_input(a);
     or_gate->connect_input(b);
     or_gate->connect_output(y);
-    sim.add_gate(or_gate);
+    sim.add_component(or_gate);
     
     // A=0, B=0 -> Y=0
     sim.schedule_event(Event(0, a->get_id(), 0));
@@ -116,7 +116,7 @@ void test_not_gate_basic() {
     NOTGate* not_gate = new NOTGate(50);
     not_gate->connect_input(a);
     not_gate->connect_output(y);
-    sim.add_gate(not_gate);
+    sim.add_component(not_gate);
     
     // A=0 -> Y=1
     sim.schedule_event(Event(0, a->get_id(), 0));
@@ -149,7 +149,7 @@ void test_propagation_delay() {
     NOTGate* not_gate = new NOTGate(100);  // 100ps delay
     not_gate->connect_input(a);
     not_gate->connect_output(y);
-    sim.add_gate(not_gate);
+    sim.add_component(not_gate);
     
     // Schedule A=1 at t=0
     sim.schedule_event(Event(0, a->get_id(), 1));

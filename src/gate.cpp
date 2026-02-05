@@ -8,7 +8,9 @@ uint32_t ORGate::id_counter = 0;
 uint32_t NOTGate::id_counter = 0;
 uint32_t XORGate::id_counter = 0;
 
-Gate::Gate(std::string gate_id, uint64_t delay) : id(gate_id), propagation_delay(delay) {
+Gate::Gate(std::string gate_id, uint64_t delay) {
+    id = gate_id;
+    propagation_delay = delay;
 }
 
 void Gate::connect_input(Signal* sig) {
@@ -18,14 +20,6 @@ void Gate::connect_input(Signal* sig) {
 
 void Gate::connect_output(Signal* sig) {
     output = sig;
-}
-
-uint64_t Gate::get_delay() const {
-    return propagation_delay;
-}
-
-std::string Gate::get_id() const {
-    return id;
 }
 
 ANDGate::ANDGate(uint64_t delay) 

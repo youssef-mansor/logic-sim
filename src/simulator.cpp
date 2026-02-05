@@ -39,11 +39,11 @@ void Simulator::add_signal(Signal* sig) {
     initial_values[sig->get_id()] = sig->get_value();
 }
 
-void Simulator::add_gate(Gate* gate) {
-    if (!gate) {
-        throw std::invalid_argument("Cannot add null gate");
+void Simulator::add_component(Component* component) {
+    if (!component) {
+        throw std::invalid_argument("Cannot add null component");
     }
-    gates.push_back(gate);
+    components.push_back(component);
 }
 
 Signal* Simulator::get_signal_by_name(const std::string& name) {
@@ -71,7 +71,7 @@ void Simulator::step() {
         return;
     }
 
-    std::vector<std::reference_wrapper<const std::vector<Gate *>>> observer_lists;
+    std::vector<std::reference_wrapper<const std::vector<Component *>>> observer_lists;
     bool same_step = true;
 
     while(same_step){
@@ -113,10 +113,10 @@ void Simulator::step() {
     // Notify observers
     for (const auto& list_wrapper : observer_lists) {
         
-        const std::vector<Gate*>& observer_list = list_wrapper.get();
+        const std::vector<Component*>& observer_list = list_wrapper.get();
         
-        for (Gate* gate : observer_list) {
-            gate->evaluate(this, current_time);
+        for (Component* component : observer_list) {
+            component->evaluate(this, current_time);
         }
     }
 }

@@ -33,11 +33,11 @@ const std::string& Signal::get_name() const {
     return name;
 }
 
-void Signal::attach_observer(Gate* gate) {
-    observers.push_back(gate);
+void Signal::attach_observer(Component* component) {
+    observers.push_back(component);
 }
 
-const std::vector<Gate*>& Signal::get_observers() const {
+const std::vector<Component*>& Signal::get_observers() const {
     return observers;
 }
 

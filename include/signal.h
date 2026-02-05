@@ -5,8 +5,8 @@
 #include <vector>
 #include <cstdint>
 
-// Forward declaration for observer pattern (Sprint 7)
-class Gate;
+// Forward declaration for observer pattern
+class Component;
 
 class Signal {
 private:
@@ -14,7 +14,7 @@ private:
     uint32_t id;  // Unique identifier for the signal
     std::string name;
     uint8_t current_value;  // 0, 1, or 2 (for 'X' unknown)
-    std::vector<Gate*> observers;  // Gates that depend on this signal
+    std::vector<Component*> observers;  // Components that depend on this signal
     
 public:
     // Constructor
@@ -28,9 +28,9 @@ public:
     // Identity
     const std::string& get_name() const;
     
-    // Observer management (for future sprints)
-    void attach_observer(Gate* gate);
-    const std::vector<Gate*>& get_observers() const;
+    // Observer management
+    void attach_observer(Component* component);
+    const std::vector<Component*>& get_observers() const;
     
     // Utility
     std::string value_to_string() const;  // "0", "1", or "X"

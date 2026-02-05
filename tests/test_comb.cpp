@@ -18,12 +18,12 @@ void test_half_adder() {
     Signal* carry = sim.create_signal("Carry", 2);
     
     // Build half adder: Sum = A XOR B, Carry = A AND B
-    XORGate* xor_gate = sim.create_gate<XORGate>(100);
+    XORGate* xor_gate = sim.create_component<XORGate>(100);
     xor_gate->connect_input(a);
     xor_gate->connect_input(b);
     xor_gate->connect_output(sum);
     
-    ANDGate* and_gate = sim.create_gate<ANDGate>(100);
+    ANDGate* and_gate = sim.create_component<ANDGate>(100);
     and_gate->connect_input(a);
     and_gate->connect_input(b);
     and_gate->connect_output(carry);
@@ -94,29 +94,29 @@ void test_full_adder() {
     Signal* carry2 = sim.create_signal("carry2", 2); // Second half-adder carry
     
     // First half-adder: A + B
-    XORGate* xor1 = sim.create_gate<XORGate>(delay);
+    XORGate* xor1 = sim.create_component<XORGate>(delay);
     xor1->connect_input(a);
     xor1->connect_input(b);
     xor1->connect_output(sum1);
     
-    ANDGate* and1 = sim.create_gate<ANDGate>(delay);
+    ANDGate* and1 = sim.create_component<ANDGate>(delay);
     and1->connect_input(a);
     and1->connect_input(b);
     and1->connect_output(carry1);
     
     // Second half-adder: sum1 + Cin
-    XORGate* xor2 = sim.create_gate<XORGate>(delay);
+    XORGate* xor2 = sim.create_component<XORGate>(delay);
     xor2->connect_input(sum1);
     xor2->connect_input(cin);
     xor2->connect_output(sum);
     
-    ANDGate* and2 = sim.create_gate<ANDGate>(delay);
+    ANDGate* and2 = sim.create_component<ANDGate>(delay);
     and2->connect_input(sum1);
     and2->connect_input(cin);
     and2->connect_output(carry2);
     
     // Final OR for carry out
-    ORGate* or_gate = sim.create_gate<ORGate>(delay);
+    ORGate* or_gate = sim.create_component<ORGate>(delay);
     or_gate->connect_input(carry1);
     or_gate->connect_input(carry2);
     or_gate->connect_output(cout);

@@ -19,6 +19,7 @@ add_executable(test_integration
     src/event_queue.cpp
     src/signal.cpp
     src/gate.cpp
+    src/component.cpp
     src/simulator.cpp
 )
 
@@ -30,6 +31,7 @@ add_executable(test_trace_waveform
     src/event_queue.cpp
     src/signal.cpp
     src/gate.cpp
+    src/component.cpp
     src/simulator.cpp
 )
 
@@ -41,7 +43,20 @@ add_executable(test_comb
     src/event_queue.cpp
     src/signal.cpp
     src/gate.cpp
+    src/component.cpp
     src/simulator.cpp
 )
 
 target_include_directories(test_comb PRIVATE include)
+
+add_executable(test_dff
+    tests/test_dff.cpp
+    src/event.cpp
+    src/event_queue.cpp
+    src/signal.cpp
+    src/component.cpp
+    src/sequential.cpp
+    src/simulator.cpp
+)
+
+target_include_directories(test_dff PRIVATE include)

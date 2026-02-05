@@ -4,28 +4,18 @@
 #include <vector>
 #include <cstdint>
 #include "signal.h"
+#include "component.h"
 
 class Simulator;  // Forward declaration
 
-class Gate {
-protected:
-    std::vector<Signal*> inputs;
-    Signal* output;
-    uint64_t propagation_delay;  // picoseconds
-    std::string id;   // Unique identifier (e.g., "AND1")
-    
+class Gate : public Component {
 public:
     Gate(std::string id, uint64_t delay);
     virtual ~Gate() = default;
-    
-    // Pure virtual - subclasses define logic
-    virtual void evaluate(Simulator* sim, uint64_t current_time) = 0;
-    
+
     // Common functionality
     void connect_input(Signal* sig);
     void connect_output(Signal* sig);
-    uint64_t get_delay() const;
-    std::string get_id() const;
 };
 
 class ANDGate : public Gate {
@@ -52,7 +42,6 @@ public:
     void evaluate(Simulator* sim, uint64_t current_time) override;
 };
 
-// TODO: verify by AI. What should be the delay?
 class XORGate : public Gate {
 private:
     static uint32_t id_counter;

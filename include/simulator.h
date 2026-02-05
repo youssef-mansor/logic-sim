@@ -3,7 +3,7 @@
 
 #include "event_queue.h"
 #include "signal.h"
-#include "gate.h"
+#include "component.h"
 #include <vector>
 #include <map>
 #include <string>
@@ -13,7 +13,7 @@ class Simulator {
 private:
     EventQueue event_queue;
     std::vector<Signal*> signals;
-    std::vector<Gate*> gates;
+    std::vector<Component*> components;
     std::map<std::string, Signal*> signal_by_name;
     std::map<int, Signal*> signal_by_id;
     uint64_t current_time;
@@ -33,15 +33,15 @@ public:
     // Component management
     Signal* create_signal(const std::string& name, uint8_t value); // Create and register signal
 
-    // Create and register signal
-    template<typename GateType>
-    GateType* create_gate(uint64_t delay){
-        GateType* gate = new GateType(delay);
-        add_gate(gate);
-        return gate;
+    // Create and register components
+    template<typename ComponentType>
+    ComponentType* create_component(uint64_t delay){
+        ComponentType* component = new ComponentType(delay);
+        add_component(component);
+        return component;
     }
     void add_signal(Signal* sig);
-    void add_gate(Gate* gate);
+    void add_component(Component* component);
     
     // Signal lookup
     Signal* get_signal_by_name(const std::string& name);

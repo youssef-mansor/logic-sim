@@ -14,7 +14,7 @@ int main() {
     Signal* b = sim.create_signal("B", 0);
     Signal* y = sim.create_signal("Y", 2);
     
-    ANDGate* gate = sim.create_gate<ANDGate>(100);
+    ANDGate* gate = sim.create_component<ANDGate>(100);
     gate->connect_input(a);
     gate->connect_input(b);
     gate->connect_output(y);
